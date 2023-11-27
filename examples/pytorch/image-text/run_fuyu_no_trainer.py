@@ -440,7 +440,7 @@ def main():
         # LoRA configuration
         lora_config = LoraConfig(
             target_modules=["query_key_value"],
-            init_lora_weights=False
+            init_lora_weights=True
         )
         model.add_adapter(lora_config, adapter_name="lora")
     else:
