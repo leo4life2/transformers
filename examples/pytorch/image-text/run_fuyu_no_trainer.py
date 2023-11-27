@@ -41,6 +41,7 @@ from datasets import load_dataset
 from huggingface_hub import Repository, create_repo
 from torch.utils.data import DataLoader
 from tqdm.auto import tqdm
+from peft import LoraConfig
 
 import transformers
 from transformers import (
@@ -433,7 +434,15 @@ def main():
             config=config,
             low_cpu_mem_usage=args.low_cpu_mem_usage,
             trust_remote_code=args.trust_remote_code,
+            load_in_4bit=True
         )
+        
+        # LoRA configuration
+        lora_config = LoraConfig(
+            target_modules=["query_key_value"],
+            init_lora_weights=False
+        )
+        model.add_adapter(lora_config, adapter_name="lora")
     else:
         logger.info("Training new model from scratch")
         model = AutoModelForCausalLM.from_config(config, trust_remote_code=args.trust_remote_code)
